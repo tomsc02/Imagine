@@ -2,6 +2,24 @@ import sys
 import urllib
 import re
 
+def save_html_content(year, content):
+    try:
+        file_handle = open(str(year) + ".cached", "w")
+        file_handle.write("".join(content))
+        file_handle.flush()
+        file_handle.close()
+    except:
+        return    
+
+def laod_cached_html_content(year):
+    try:
+        file_handle = open(str(year) + ".cached", "r")
+        content = file_handle.readlines()
+        file_handle.close()
+        return content
+    except:
+        return False
+
 def fetch_html_page_with_baby_name_per_year(year):
     url = 'http://www.ssa.gov/cgi-bin/popularnames.cgi'
     headers = {
@@ -73,9 +91,13 @@ def fetch_average_ranking(parameters):
         content = fetch_html_page_with_baby_name_per_year(year)
 
         if content == False:
-            print("failed to load content from the net, fetch it from the cache")
+            content = load_cached_html_content(year)
         else:
-            print("content successfully fetched, write it to cache")
+            save_html_content(year, content)
+
+        if content == False:
+            print("unable to fetch the list for year " + str(year) + " from the internet and it is not cached yet")
+            continue
 
         ranking = fetch_ranking_from_html_content(content, parameters["name"])
 
