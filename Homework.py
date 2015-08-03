@@ -11,7 +11,7 @@ def save_html_content(year, content):
     except:
         return    
 
-def laod_cached_html_content(year):
+def load_cached_html_content(year):
     try:
         file_handle = open(str(year) + ".cached", "r")
         content = file_handle.readlines()
@@ -38,7 +38,7 @@ def fetch_html_page_with_baby_name_per_year(year):
 
     try:
         response = urllib.urlopen(url, encoded_post_params, headers)
-        content = response.readlines() # grab content in a list of lines
+        content = response.readlines()
         return content
     except:
         return False
@@ -50,10 +50,10 @@ def fetch_ranking_from_html_content(html_content_by_lines, name):
         if len(parsed_content) != 3:
             continue
         try:
-            position = int(parsed_content[0].replace("</td>","").replace("<td>","")) #replace html fluff to nothing, if the first data is not a position (integer) then continue
+            position = int(parsed_content[0].replace("</td>","").replace("<td>","")) 
         except:
             continue
-        male_name = parsed_content[1].replace("</td>","").replace("<td>","") #just copy the names
+        male_name = parsed_content[1].replace("</td>","").replace("<td>","")
         female_name = parsed_content[2].replace("</td>","").replace("<td>","")
 
         if male_name == name:
@@ -62,13 +62,13 @@ def fetch_ranking_from_html_content(html_content_by_lines, name):
     return False
 
 def fetch_command_line_arguments():
-    if len(sys.argv) != 4: #check number of arguments
-        print("Invalid params")
+    if len(sys.argv) != 4: 
+        print("Invalid entry, please use the format name year1 year2")
         exit()
     parameters = {}
-    parameters["name"] = sys.argv[1] #first arg goes to dict as name
+    parameters["name"] = sys.argv[1] 
 
-    try: #try catch block for error handling if the users enters strings for years
+    try: 
         parameters["start_year"] = int(sys.argv[2])
     except:
         print("start year must be integer")
@@ -83,10 +83,10 @@ def fetch_command_line_arguments():
     return parameters
 
 def fetch_average_ranking(parameters):
-
+    print("Working.... Please wait !!!")
     sum = 0.0
     number_of_entries_found = 0.0
-
+homework.py 
     for year in xrange(parameters["start_year"], (parameters["end_year"] + 1)):
         content = fetch_html_page_with_baby_name_per_year(year)
 
@@ -108,7 +108,7 @@ def fetch_average_ranking(parameters):
         number_of_entries_found += 1
 
     if sum == 0:
-        return False
+        return 0
 
     return sum / number_of_entries_found
 
@@ -118,4 +118,5 @@ average_ranking = fetch_average_ranking(parameters)
 if average_ranking == False:
     print("name not found in any of the top 1000 rankings")
 
-print("Between " + str(parameters["start_year"]) + " and " + str(parameters["end_year"]) + " the average popularity rank of the name " + parameters["name"] + " was " + str(average_ranking))
+print("Between " + str(parameters["start_year"]) + " and " + str(parameters["end_year"]) + " the average popularity rank of the name " + parameters["name"] + " was " + format(average_ranking, '.2f'))
+
