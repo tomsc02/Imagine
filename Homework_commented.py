@@ -112,7 +112,7 @@ def fetch_average_ranking(parameters):
         content = fetch_html_page_with_baby_name_per_year(year) #try to grab the content from the website
 
         if content == False: #content was not retrieved from the web, try to load it from cache
-            content = laod_cached_html_content(year)
+            content = load_cached_html_content(year)
         else:
             save_html_content(year, content) #content was retrieved from the web, refresh cache
 
