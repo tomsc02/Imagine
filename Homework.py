@@ -17,9 +17,13 @@ def fetch_html_page_with_baby_name_per_year(year):
         'year' : year
     }
     encoded_post_params = urllib.urlencode(post_params)
-    response = urllib.urlopen(url, encoded_post_params, headers)
-    content = response.readlines() 
-    return content
+
+    try:
+        response = urllib.urlopen(url, encoded_post_params, headers)
+        content = response.readlines() # grab content in a list of lines
+        return content
+    except:
+        return False
 
 def fetch_ranking_from_html_content(html_content_by_lines, name):
     td_content = re.compile("<td>[0-9A-Za-z]+</td>")
@@ -28,10 +32,10 @@ def fetch_ranking_from_html_content(html_content_by_lines, name):
         if len(parsed_content) != 3:
             continue
         try:
-            position = int(parsed_content[0].replace("</td>","").replace("<td>",""))
+            position = int(parsed_content[0].replace("</td>","").replace("<td>","")) #replace html fluff to nothing, if the first data is not a position (integer) then continue
         except:
             continue
-        male_name = parsed_content[1].replace("</td>","").replace("<td>","")
+        male_name = parsed_content[1].replace("</td>","").replace("<td>","") #just copy the names
         female_name = parsed_content[2].replace("</td>","").replace("<td>","")
 
         if male_name == name:
@@ -40,13 +44,13 @@ def fetch_ranking_from_html_content(html_content_by_lines, name):
     return False
 
 def fetch_command_line_arguments():
-    if len(sys.argv) != 4: 
+    if len(sys.argv) != 4: #check number of arguments
         print("Invalid params")
         exit()
     parameters = {}
-    parameters["name"] = sys.argv[1] 
+    parameters["name"] = sys.argv[1] #first arg goes to dict as name
 
-    try:
+    try: #try catch block for error handling if the users enters strings for years
         parameters["start_year"] = int(sys.argv[2])
     except:
         print("start year must be integer")
@@ -67,6 +71,12 @@ def fetch_average_ranking(parameters):
 
     for year in xrange(parameters["start_year"], parameters["end_year"]):
         content = fetch_html_page_with_baby_name_per_year(year)
+
+        if content == False:
+            print("failed to load content from the net, fetch it from the cache")
+        else:
+            print("content successfully fetched, write it to cache")
+
         ranking = fetch_ranking_from_html_content(content, parameters["name"])
 
         if ranking == False:
