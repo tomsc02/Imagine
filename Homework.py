@@ -87,7 +87,7 @@ def fetch_average_ranking(parameters):
     sum = 0.0
     number_of_entries_found = 0.0
 
-    for year in xrange(parameters["start_year"], parameters["end_year"]):
+    for year in xrange(parameters["start_year"], (parameters["end_year"] + 1)):
         content = fetch_html_page_with_baby_name_per_year(year)
 
         if content == False:
