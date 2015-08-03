@@ -104,7 +104,6 @@ def fetch_average_ranking(parameters):
         if ranking == False:
             continue
 
-        print(ranking)
         sum += ranking
         number_of_entries_found += 1
 
